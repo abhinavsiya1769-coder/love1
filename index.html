@@ -17,7 +17,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #fce4ec; /* soft pink */
+            background: #fce4ec;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -51,7 +51,7 @@
             55% { transform: scale(1); }
             100% { transform: scale(1); }
         }
-        /* Main message and letter (visible after overlay fades) */
+        /* Main message */
         #main-message {
             position: absolute;
             top: 30px;
@@ -71,42 +71,50 @@
             0% { text-shadow: 0 0 15px #ffb6c1, 0 0 30px #ffb6c1; }
             100% { text-shadow: 0 0 25px #ffc0cb, 0 0 50px #ff99aa; }
         }
+        /* Note card (initially hidden, slides up) */
         #letter {
             position: absolute;
             bottom: 40px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(80px);
             width: 85%;
             max-width: 650px;
-            background: rgba(255, 240, 245, 0.2);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-left: 5px solid #ffb6c1;
-            border-radius: 24px;
+            background: #fff9f0;  /* cream paper */
+            background-image: radial-gradient(circle at 30% 40%, rgba(255,230,240,0.3) 0%, transparent 30%),
+                              linear-gradient(135deg, #fff5e6 0%, #ffe8f0 100%);
+            border: 2px solid #e6c9a8;
+            border-radius: 28px;
             padding: 25px 30px;
-            color: #2e1b2e;
+            color: #4a2c2c;
             font-size: 1.1rem;
             line-height: 1.7;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.2) inset;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 2px #f0dbb4 inset, 0 0 0 4px #fff0e0 inset;
             z-index: 20;
             max-height: 50vh;
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: #ffb6c1 rgba(255,255,255,0.2);
-            pointer-events: none;
-            text-shadow: 0 1px 3px rgba(255,255,255,0.3);
+            scrollbar-color: #e6c9a8 #ffe8f0;
+            opacity: 0;
+            transition: opacity 1s ease, transform 1s ease;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            border-bottom: 6px solid #d4a5a5;  /* decorative thicker bottom border */
+        }
+        #letter.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
         #letter::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         #letter::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.2);
+            background: #ffe8f0;
             border-radius: 10px;
         }
         #letter::-webkit-scrollbar-thumb {
-            background: #ffb6c1;
+            background: #e6c9a8;
             border-radius: 10px;
+            border: 1px solid #ffd9e6;
         }
         #letter p {
             margin: 0 0 16px 0;
@@ -116,9 +124,20 @@
             font-size: 1.3rem;
             color: #b3546b;
             margin-top: 20px;
-            border-top: 1px dashed rgba(255,182,193,0.5);
+            border-top: 2px dashed #e6c9a8;
             padding-top: 15px;
             font-style: italic;
+        }
+        /* Small heart decoration at bottom */
+        #letter::after {
+            content: "❤️";
+            position: absolute;
+            bottom: -12px;
+            right: 30px;
+            font-size: 24px;
+            filter: drop-shadow(0 2px 5px rgba(255,120,140,0.5));
+            background: #fff9f0;
+            padding: 0 10px;
         }
         .instructions {
             position: absolute;
@@ -151,6 +170,7 @@
     <!-- Main content (visible after overlay fades) -->
     <div id="main-message">💗 Happy Valentine's Day, Yusra Baby 💗</div>
     
+    <!-- Note card with message (hidden initially) -->
     <div id="letter">
         <p>My dearest valentine,<br>Yusra Baby ❤️❤️</p>
         <p>Every day that passes, my love for you grows stronger. You bring so much light and happiness into my life. Your kindness, your sense of humor, and your unwavering support all make me feel so incredibly lucky to have you by my side.</p>
@@ -173,13 +193,15 @@
     </script>
 
     <script type="module">
-        // --- Hide intro overlay function (called from global) ---
+        // --- Hide intro overlay and show note card with slide-up ---
         window.startCard = function() {
             const overlay = document.getElementById('intro-overlay');
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.pointerEvents = 'none';
                 overlay.style.display = 'none'; // optional
+                // Show the note card with slide-up
+                document.getElementById('letter').classList.add('show');
             }, 1500);
         };
 
